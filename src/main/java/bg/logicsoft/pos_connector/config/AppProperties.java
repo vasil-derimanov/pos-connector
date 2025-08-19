@@ -1,49 +1,28 @@
 package bg.logicsoft.pos_connector.config;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "pos-connector")
 public class AppProperties {
 
-    private ERPNextProperties erpnext = new ERPNextProperties();
-    private FPGateProperties fpgate = new FPGateProperties();
+    @Value("${erpnext.url}")
+    private String erpNextUrl;
 
-    public ERPNextProperties getERPNext() {
-        return erpnext;
-    }
-    public void setERPNext(ERPNextProperties erpnext) {
-        this.erpnext = erpnext;
-    }
+    @Value("${fpgate.url}")
+    private String fpGateUrl;
 
-    public FPGateProperties getFPGate() {
-        return fpgate;
-    }
-    public void setFPGate(FPGateProperties fpgate) {
-        this.fpgate = fpgate;
-    }
+    @Value("${erpnext.api-key}")
+    private String erpNextApiKey;
 
-    // Nested static classes for sub-properties
-    public static class ERPNextProperties {
-        private String url;
+    @Value("${erpnext.api-secret}")
+    private String erpNextApiSecret;
 
-        public String getUrl() {
-            return url;
-        }
-        public void setUrl(String url) {
-            this.url = url;
-        }
-    }
+    public String getERPNextUrl() { return erpNextUrl;}
+    public String getERPNextApiKey() { return erpNextApiKey; }
+    public String getERPNextApiSecret() { return erpNextApiSecret; }
 
-    public static class FPGateProperties {
-        private String url;
-
-        public String getUrl() {
-            return url;
-        }
-        public void setUrl(String url) {
-            this.url = url;
-        }
+    public String getFPGateUrl() {
+        return fpGateUrl;
     }
 }

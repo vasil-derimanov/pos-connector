@@ -1,10 +1,10 @@
 package bg.logicsoft.pos_connector.controllers;
 
 import bg.logicsoft.pos_connector.config.AppProperties;
+import bg.logicsoft.pos_connector.dto.POSInvoiceDTO;
+import bg.logicsoft.pos_connector.services.ERPNextService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -12,21 +12,14 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 public class POSInvoiceController {
-    private final AppProperties appProperties;
+    private final ERPNextService erpNextService;
 
-    public POSInvoiceController(AppProperties appProperties) {
-        this.appProperties = appProperties;
+    public POSInvoiceController(ERPNextService erpNextService) {
+        this.erpNextService = erpNextService;
     }
 
-    @GetMapping("/pos-invoice")
-    public ResponseEntity<Map<String, Object>> posInvoice() {
-
-        // TODO: make implementation
-        Map<String, Object> posInvoiceTestResp = new LinkedHashMap<>();
-        posInvoiceTestResp.put("pos-invoice", "TEST pos-invoice");
-        posInvoiceTestResp.put("version", "0.0.1-SNAPSHOT");
-        posInvoiceTestResp.put("erpNextProp.getUrl()", appProperties.getERPNext().getUrl());
-
-        return ResponseEntity.ok(posInvoiceTestResp);
+    @PostMapping("/pos-invoice")
+    public ResponseEntity<?> createPOSInvoice(@RequestBody POSInvoiceDTO invoice) {
+        return ResponseEntity.ok(erpNextService.sendInvoiceToERPNext(invoice));
     }
 }
