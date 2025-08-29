@@ -6,11 +6,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AppProperties {
 
+    /* ERPNext configuration */
     @Value("${erpnext.url}")
     private String erpNextUrl;
-
-    @Value("${fpgate.url}")
-    private String fpGateUrl;
 
     @Value("${erpnext.api-key}")
     private String erpNextApiKey;
@@ -18,11 +16,88 @@ public class AppProperties {
     @Value("${erpnext.api-secret}")
     private String erpNextApiSecret;
 
-    public String getERPNextUrl() { return erpNextUrl;}
-    public String getERPNextApiKey() { return erpNextApiKey; }
-    public String getERPNextApiSecret() { return erpNextApiSecret; }
+    /* ERPNext "Sales Invoice" details */
+    @Value("${erpnext.pos-warehouse}")
+    private String erpNextPOSWarehouse;
 
-    public String getFPGateUrl() {
+    @Value("${erpnext.pos-profile-BGN}")
+    private String erpNextPOSProfileBGN;
+
+    @Value("${erpnext.pos-profile-EUR}")
+    private String erpNextPOSProfileEUR;
+
+    @Value("${erpnext.company}")
+    private String erpNextCompany;
+
+    @Value("${erpnext.debit-to-BGN}")
+    private String erpNextDebitToBGN;
+
+    @Value("${erpnext.debit-to-EUR}")
+    private String erpNextDebitToEUR;
+
+    @Value("${erpnext.mode-of-payment-BGN}")
+    private String erpNextModeOfPaymentBGN;
+
+    @Value("${erpnext.mode-of-payment-EUR}")
+    private String erpNextModeOfPaymentEUR;
+
+    @Value("${erpnext.charge-type}")
+    private String erpNextChargeType;
+
+    /* Fiscal Printer Gate configuration */
+    @Value("${fpgate.url}")
+    private String fpGateUrl;
+
+
+    public String getErpNextUrl() {
+        return erpNextUrl;
+    }
+
+    public String getErpNextApiKey() {
+        return erpNextApiKey;
+    }
+
+    public String getErpNextApiSecret() {
+        return erpNextApiSecret;
+    }
+
+    public String getErpNextPOSWarehouse() {
+        return erpNextPOSWarehouse;
+    }
+
+    public String getErpNextPOSProfileBGN() {
+        return erpNextPOSProfileBGN;
+    }
+
+    public String getErpNextPOSProfileEUR() {
+        return erpNextPOSProfileEUR;
+    }
+
+    public String getErpNextCompany() {
+        return erpNextCompany;
+    }
+
+    public String getErpNextDebitToBGN() {
+        return erpNextDebitToBGN;
+    }
+
+    public String getErpNextDebitToEUR() {
+        return erpNextDebitToEUR;
+    }
+
+    public String getErpNextModeOfPaymentBGN() {
+        return erpNextModeOfPaymentBGN;
+    }
+
+    public String getErpNextModeOfPaymentEUR() {
+        return erpNextModeOfPaymentEUR;
+    }
+
+    public String getErpNextChargeType() {
+        return erpNextChargeType;
+    }
+
+    public String getFpGateUrl() {
         return fpGateUrl;
     }
 }

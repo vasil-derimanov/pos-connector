@@ -1,0 +1,348 @@
+package bg.logicsoft.pos_connector.dto;
+
+import bg.logicsoft.pos_connector.config.AppProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Date;
+import java.util.List;
+
+public class ERPNextSalesInvoiceDTO {
+
+    private static final String CURRENCY_BGN = "BGN";
+    private static final String CURRENCY_EUR = "EUR";
+    private static final String DOCTYPE_SALES_INVOICE = "Sales Invoice";
+
+    private String doctype;
+    private String customer;
+    @JsonProperty("pos_profile")
+    private String posProfile;
+    private String company;
+    @JsonProperty("posting_date")
+    private Date postingDate;
+    private String currency;
+    @JsonProperty("set_warehouse")
+    private String setWarehouse;
+    @JsonProperty("debit_to")
+    private String debitTo;
+    @JsonProperty("is_pos")
+    private int isPos;
+    @JsonProperty("update_stock")
+    private int updateStock;
+
+    private List<Item> items;
+    private List<Payment> payments;
+    private List<Tax> taxes;
+
+    public ERPNextSalesInvoiceDTO() {
+    }
+
+    private static String resolvePosProfileForCurrency(String currency, AppProperties appProperties) {
+        if (currency == null) return null;
+        return switch (currency) {
+            case CURRENCY_BGN -> sanitizePropertyValue(appProperties.getErpNextPOSProfileBGN());
+            case CURRENCY_EUR -> sanitizePropertyValue(appProperties.getErpNextPOSProfileEUR());
+            default -> null;
+        };
+    }
+
+    private static String resolveDebitToForCurrency(String currency, AppProperties appProperties) {
+        if (currency == null) return null;
+        return switch (currency) {
+            case CURRENCY_BGN -> sanitizePropertyValue(appProperties.getErpNextDebitToBGN());
+            case CURRENCY_EUR -> sanitizePropertyValue(appProperties.getErpNextDebitToEUR());
+            default -> null;
+        };
+    }
+
+    // trims whitespace and removes surrounding single/double quotes, if present
+    private static String sanitizePropertyValue(String value) {
+        if (value == null) return null;
+        String trimmed = value.strip();
+        if (trimmed.length() >= 2) {
+            char first = trimmed.charAt(0);
+            char last = trimmed.charAt(trimmed.length() - 1);
+            if ((first == '"' && last == '"') || (first == '\'' && last == '\'')) {
+                return trimmed.substring(1, trimmed.length() - 1);
+            }
+        }
+        return trimmed;
+    }
+
+    // Maps a POSSaleDTO to an ERPNextSalesInvoiceDTO
+    public void setFromPOSSale(POSSaleDTO sale, AppProperties appProperties) {
+        if (sale == null) {
+            return;
+        }
+
+        // 1. Simple fields
+        this.setDoctype(DOCTYPE_SALES_INVOICE);
+        this.setCustomer(sale.getCustomer());
+        this.setCompany(sanitizePropertyValue(appProperties.getErpNextCompany()));
+        this.setPostingDate(sale.getPostingDate());
+        this.setCurrency(sanitizePropertyValue(sale.getCurrency()));
+
+        final String currency = this.getCurrency();
+        this.setPosProfile(resolvePosProfileForCurrency(currency, appProperties));
+        this.setDebitTo(resolveDebitToForCurrency(currency, appProperties));
+        this.setSetWarehouse(sanitizePropertyValue(appProperties.getErpNextPOSWarehouse()));
+        this.setIsPos(1);
+
+        // 2. Items
+        if (sale.getItems() != null) {
+            List<Item> mappedItems = new java.util.ArrayList<>();
+            for (POSSaleDTO.Item srcItem : sale.getItems()) {
+                if (srcItem == null) continue;
+                Item item = new Item();
+                item.setItemCode(sanitizePropertyValue(srcItem.getItemCode()));
+                item.setQty(srcItem.getQty() != null ? srcItem.getQty() : 0.0);
+                item.setRate(srcItem.getRate() != null ? srcItem.getRate() : 0.0);
+                item.setWarehouse(sanitizePropertyValue(appProperties.getErpNextPOSWarehouse()));
+                mappedItems.add(item);
+            }
+            this.setItems(mappedItems);
+        } else {
+            this.setItems(null);
+        }
+
+        // 3. Payments
+        if (sale.getPayments() != null) {
+            List<Payment> mappedPayments = new java.util.ArrayList<>();
+            for (POSSaleDTO.Payment srcPay : sale.getPayments()) {
+                if (srcPay == null) continue;
+                Payment payment = new Payment();
+                payment.setModeOfPayment(srcPay.getModeOfPayment());
+                payment.setAmount(srcPay.getAmount() != null ? srcPay.getAmount() : 0.0);
+                mappedPayments.add(payment);
+            }
+            this.setPayments(mappedPayments);
+        } else {
+            this.setPayments(null);
+        }
+
+        // 4. Taxes
+        if (sale.getTaxes() != null) {
+            List<Tax> mappedTaxes = new java.util.ArrayList<>();
+            for (POSSaleDTO.Tax srcTax : sale.getTaxes()) {
+                if (srcTax == null) continue;
+                Tax tax = new Tax();
+                tax.setChargeType(sanitizePropertyValue(srcTax.getChargeType()));
+                tax.setAccountHead(sanitizePropertyValue(srcTax.getAccountHead()));
+                tax.setDescription(sanitizePropertyValue(srcTax.getAccountHead()));
+                tax.setRate(srcTax.getRate() != null ? srcTax.getRate() : 0.0);
+                mappedTaxes.add(tax);
+            }
+            this.setTaxes(mappedTaxes);
+        } else {
+            this.setTaxes(null);
+        }
+    }
+
+    // Getters and Setters for the main class
+    public String getDoctype() {
+        return doctype;
+    }
+
+    public void setDoctype(String doctype) {
+        this.doctype = doctype;
+    }
+
+    public String getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(String customer) {
+        this.customer = customer;
+    }
+
+    public String getPosProfile() {
+        return posProfile;
+    }
+
+    public void setPosProfile(String posProfile) {
+        this.posProfile = posProfile;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public Date getPostingDate() {
+        return postingDate;
+    }
+
+    public void setPostingDate(Date postingDate) {
+        this.postingDate = postingDate;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public String getSetWarehouse() {
+        return setWarehouse;
+    }
+
+    public void setSetWarehouse(String setWarehouse) {
+        this.setWarehouse = setWarehouse;
+    }
+
+    public String getDebitTo() {
+        return debitTo;
+    }
+
+    public void setDebitTo(String debitTo) {
+        this.debitTo = debitTo;
+    }
+
+    public int getIsPos() {
+        return isPos;
+    }
+
+    public void setIsPos(int isPos) {
+        this.isPos = isPos;
+    }
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
+
+    public List<Payment> getPayments() {
+        return payments;
+    }
+
+    public void setPayments(List<Payment> payments) {
+        this.payments = payments;
+    }
+
+    public List<Tax> getTaxes() {
+        return taxes;
+    }
+
+    public void setTaxes(List<Tax> taxes) {
+        this.taxes = taxes;
+    }
+
+    public int getUpdateStock() {
+        return updateStock;
+    }
+
+    public void setUpdateStock(int updateStock) {
+        this.updateStock = updateStock;
+    }
+
+    // Nested classes
+    public static class Item {
+        @JsonProperty("item_code")
+        private String itemCode;
+        private double qty;
+        private double rate;
+        private String warehouse;
+
+        public String getItemCode() {
+            return itemCode;
+        }
+
+        public void setItemCode(String itemCode) {
+            this.itemCode = itemCode;
+        }
+
+        public double getQty() {
+            return qty;
+        }
+
+        public void setQty(double qty) {
+            this.qty = qty;
+        }
+
+        public double getRate() {
+            return rate;
+        }
+
+        public void setRate(double rate) {
+            this.rate = rate;
+        }
+
+        public String getWarehouse() {
+            return warehouse;
+        }
+
+        public void setWarehouse(String warehouse) {
+            this.warehouse = warehouse;
+        }
+    }
+
+    public static class Payment {
+        @JsonProperty("mode_of_payment")
+        private String modeOfPayment;
+        private double amount;
+
+        public String getModeOfPayment() {
+            return modeOfPayment;
+        }
+
+        public void setModeOfPayment(String modeOfPayment) {
+            this.modeOfPayment = modeOfPayment;
+        }
+
+        public double getAmount() {
+            return amount;
+        }
+
+        public void setAmount(double amount) {
+            this.amount = amount;
+        }
+    }
+
+    public static class Tax {
+        @JsonProperty("charge_type")
+        private String chargeType;
+        @JsonProperty("account_head")
+        private String accountHead;
+        private String description;
+        private double rate;
+
+        public String getChargeType() {
+            return chargeType;
+        }
+
+        public void setChargeType(String chargeType) {
+            this.chargeType = chargeType;
+        }
+
+        public String getAccountHead() {
+            return accountHead;
+        }
+
+        public void setAccountHead(String accountHead) {
+            this.accountHead = accountHead;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public double getRate() {
+            return rate;
+        }
+
+        public void setRate(double rate) {
+            this.rate = rate;
+        }
+    }
+}
