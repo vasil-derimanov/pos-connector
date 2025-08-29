@@ -2,10 +2,14 @@ package bg.logicsoft.pos_connector.dto;
 
 import bg.logicsoft.pos_connector.config.AppProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 import java.util.List;
 
+@Getter
+@Setter
 public class ERPNextSalesInvoiceDTO {
 
     private static final String CURRENCY_BGN = "BGN";
@@ -137,174 +141,27 @@ public class ERPNextSalesInvoiceDTO {
         }
     }
 
-    // Getters and Setters for the main class
-    public String getDoctype() {
-        return doctype;
-    }
-
-    public void setDoctype(String doctype) {
-        this.doctype = doctype;
-    }
-
-    public String getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(String customer) {
-        this.customer = customer;
-    }
-
-    public String getPosProfile() {
-        return posProfile;
-    }
-
-    public void setPosProfile(String posProfile) {
-        this.posProfile = posProfile;
-    }
-
-    public String getCompany() {
-        return company;
-    }
-
-    public void setCompany(String company) {
-        this.company = company;
-    }
-
-    public Date getPostingDate() {
-        return postingDate;
-    }
-
-    public void setPostingDate(Date postingDate) {
-        this.postingDate = postingDate;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
-    public String getSetWarehouse() {
-        return setWarehouse;
-    }
-
-    public void setSetWarehouse(String setWarehouse) {
-        this.setWarehouse = setWarehouse;
-    }
-
-    public String getDebitTo() {
-        return debitTo;
-    }
-
-    public void setDebitTo(String debitTo) {
-        this.debitTo = debitTo;
-    }
-
-    public int getIsPos() {
-        return isPos;
-    }
-
-    public void setIsPos(int isPos) {
-        this.isPos = isPos;
-    }
-
-    public List<Item> getItems() {
-        return items;
-    }
-
-    public void setItems(List<Item> items) {
-        this.items = items;
-    }
-
-    public List<Payment> getPayments() {
-        return payments;
-    }
-
-    public void setPayments(List<Payment> payments) {
-        this.payments = payments;
-    }
-
-    public List<Tax> getTaxes() {
-        return taxes;
-    }
-
-    public void setTaxes(List<Tax> taxes) {
-        this.taxes = taxes;
-    }
-
-    public int getUpdateStock() {
-        return updateStock;
-    }
-
-    public void setUpdateStock(int updateStock) {
-        this.updateStock = updateStock;
-    }
-
     // Nested classes
+    @Getter
+    @Setter
     public static class Item {
         @JsonProperty("item_code")
         private String itemCode;
         private double qty;
         private double rate;
         private String warehouse;
-
-        public String getItemCode() {
-            return itemCode;
-        }
-
-        public void setItemCode(String itemCode) {
-            this.itemCode = itemCode;
-        }
-
-        public double getQty() {
-            return qty;
-        }
-
-        public void setQty(double qty) {
-            this.qty = qty;
-        }
-
-        public double getRate() {
-            return rate;
-        }
-
-        public void setRate(double rate) {
-            this.rate = rate;
-        }
-
-        public String getWarehouse() {
-            return warehouse;
-        }
-
-        public void setWarehouse(String warehouse) {
-            this.warehouse = warehouse;
-        }
     }
 
+    @Getter
+    @Setter
     public static class Payment {
         @JsonProperty("mode_of_payment")
         private String modeOfPayment;
         private double amount;
-
-        public String getModeOfPayment() {
-            return modeOfPayment;
-        }
-
-        public void setModeOfPayment(String modeOfPayment) {
-            this.modeOfPayment = modeOfPayment;
-        }
-
-        public double getAmount() {
-            return amount;
-        }
-
-        public void setAmount(double amount) {
-            this.amount = amount;
-        }
     }
 
+    @Getter
+    @Setter
     public static class Tax {
         @JsonProperty("charge_type")
         private String chargeType;
@@ -312,37 +169,5 @@ public class ERPNextSalesInvoiceDTO {
         private String accountHead;
         private String description;
         private double rate;
-
-        public String getChargeType() {
-            return chargeType;
-        }
-
-        public void setChargeType(String chargeType) {
-            this.chargeType = chargeType;
-        }
-
-        public String getAccountHead() {
-            return accountHead;
-        }
-
-        public void setAccountHead(String accountHead) {
-            this.accountHead = accountHead;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
-        public double getRate() {
-            return rate;
-        }
-
-        public void setRate(double rate) {
-            this.rate = rate;
-        }
     }
 }
