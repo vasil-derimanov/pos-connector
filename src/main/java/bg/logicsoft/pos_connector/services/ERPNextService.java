@@ -2,6 +2,7 @@ package bg.logicsoft.pos_connector.services;
 
 import bg.logicsoft.pos_connector.config.AppProperties;
 import bg.logicsoft.pos_connector.dto.ERPNextSalesInvoiceDTO;
+import bg.logicsoft.pos_connector.dto.RunMethodRequestDTO;
 import bg.logicsoft.pos_connector.exceptions.UpstreamClientException;
 import bg.logicsoft.pos_connector.exceptions.UpstreamServerException;
 import bg.logicsoft.pos_connector.exceptions.UpstreamTimeoutException;
@@ -15,6 +16,8 @@ import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Map;
 
@@ -72,6 +75,46 @@ public class ERPNextService {
         } catch (Exception ex) {
             log.error("Unexpected error calling ERPNext: {}", rootMessage(ex), ex);
             throw ex; // Will be handled by GlobalExceptionHandler
+        }
+    }
+
+    public Map<String, Object> submitSalesInvoice(String invoiceName) {
+        String encodedName = URLEncoder.encode(invoiceName, StandardCharsets.UTF_8);
+        String url = appProperties.getErpNextUrl() + "/api/resource/Sales Invoice/" + encodedName;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set(HttpHeaders.AUTHORIZATION, "token " + appProperties.getErpNextApiKey() + ":" + appProperties.getErpNextApiSecret());
+
+        HttpEntity<RunMethodRequestDTO> request = new HttpEntity<>(new RunMethodRequestDTO("submit"), headers);
+
+        try {
+            log.info("ERPNext POST submit start: invoice={}", invoiceName);
+            ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    request,
+                    new ParameterizedTypeReference<>() {}
+            );
+            log.info("ERPNext POST submit done: status={}", response.getStatusCode().value());
+            return response.getBody();
+        } catch (RestClientResponseException ex) {
+            org.springframework.http.HttpStatusCode status = ex.getStatusCode();
+            String body = sanitizeForLog(ex.getResponseBodyAsString());
+
+            if (status.is5xxServerError()) {
+                log.error("ERPNext submit 5xx response: status={}, body={}", status.value(), body);
+                throw new UpstreamServerException("ERPNext server error (submit)", status.value());
+            } else {
+                log.warn("ERPNext submit 4xx response: status={}, body={}", status.value(), body);
+                throw new UpstreamClientException("ERPNext rejected submit", status.value());
+            }
+        } catch (ResourceAccessException ex) {
+            log.warn("ERPNext submit access error (timeout/connection): {}", rootMessage(ex));
+            throw new UpstreamTimeoutException("Timeout or connection issue to ERPNext (submit)", ex);
+        } catch (Exception ex) {
+            log.error("Unexpected error submitting ERPNext invoice: {}", rootMessage(ex), ex);
+            throw ex;
         }
     }
 

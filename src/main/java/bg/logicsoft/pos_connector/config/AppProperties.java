@@ -1,9 +1,11 @@
 package bg.logicsoft.pos_connector.config;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@Getter
 public class AppProperties {
 
     /* ERPNext configuration */
@@ -47,57 +49,4 @@ public class AppProperties {
     /* Fiscal Printer Gate configuration */
     @Value("${fpgate.url}")
     private String fpGateUrl;
-
-
-    public String getErpNextUrl() {
-        return erpNextUrl;
-    }
-
-    public String getErpNextApiKey() {
-        return erpNextApiKey;
-    }
-
-    public String getErpNextApiSecret() {
-        return erpNextApiSecret;
-    }
-
-    public String getErpNextPOSWarehouse() {
-        return erpNextPOSWarehouse;
-    }
-
-    public String getErpNextPOSProfileBGN() {
-        return erpNextPOSProfileBGN;
-    }
-
-    public String getErpNextPOSProfileEUR() {
-        return erpNextPOSProfileEUR;
-    }
-
-    public String getErpNextCompany() {
-        return erpNextCompany;
-    }
-
-    public String getErpNextDebitToBGN() {
-        return erpNextDebitToBGN;
-    }
-
-    public String getErpNextDebitToEUR() {
-        return erpNextDebitToEUR;
-    }
-
-    public String getErpNextModeOfPaymentBGN() {
-        return erpNextModeOfPaymentBGN;
-    }
-
-    public String getErpNextModeOfPaymentEUR() {
-        return erpNextModeOfPaymentEUR;
-    }
-
-    public String getErpNextChargeType() {
-        return erpNextChargeType;
-    }
-
-    public String getFpGateUrl() {
-        return fpGateUrl;
-    }
 }

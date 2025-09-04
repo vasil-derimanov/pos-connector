@@ -89,6 +89,7 @@ public class ERPNextSalesInvoiceDTO {
         this.setPosProfile(resolvePosProfileForCurrency(currency, appProperties));
         this.setDebitTo(resolveDebitToForCurrency(currency, appProperties));
         this.setSetWarehouse(sanitizePropertyValue(appProperties.getErpNextPOSWarehouse()));
+        this.setUpdateStock(1);
         this.setIsPos(1);
 
         // 2. Items

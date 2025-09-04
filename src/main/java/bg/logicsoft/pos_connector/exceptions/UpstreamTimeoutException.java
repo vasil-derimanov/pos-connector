@@ -1,4 +1,3 @@
-// Java
 package bg.logicsoft.pos_connector.exceptions;
 
 public class UpstreamTimeoutException extends RuntimeException {
