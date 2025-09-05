@@ -1,9 +1,9 @@
 package bg.logicsoft.pos_connector.services;
 
 import bg.logicsoft.pos_connector.config.AppProperties;
+import bg.logicsoft.pos_connector.dto.ERPNextCustomersDTO;
 import bg.logicsoft.pos_connector.dto.ERPNextItemsPriceDTO;
 import bg.logicsoft.pos_connector.dto.ERPNextSalesInvoiceDTO;
-import bg.logicsoft.pos_connector.dto.FPGRunMethodRequestDTO;
 import bg.logicsoft.pos_connector.exceptions.UpstreamClientException;
 import bg.logicsoft.pos_connector.exceptions.UpstreamServerException;
 import bg.logicsoft.pos_connector.exceptions.UpstreamTimeoutException;
@@ -18,8 +18,6 @@ import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
@@ -189,6 +187,54 @@ public class ERPNextService {
             throw new UpstreamTimeoutException("Timeout or connection issue to ERPNext (Item Price)", ex);
         } catch (Exception ex) {
             log.error("Unexpected error calling ERPNext Item Price: {}", rootMessage(ex), ex);
+            throw ex;
+        }
+    }
+
+    /**
+     * Fetch customers with selected fields, mapped to ERPNextCustomersDTO.
+     */
+    public ERPNextCustomersDTO getCustomers() {
+        List<String> fields = Arrays.asList("name", "customer_name", "customer_type", "tax_id", "primary_address");
+        try {
+            String fieldsJson = toJson(fields);
+
+            // Build URL to match ERPNext expectations: encoded path, raw JSON in query
+            String url = appProperties.getErpNextUrl()
+                    + "/api/resource/Customer"
+                    + "?fields=" + fieldsJson;
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set(HttpHeaders.AUTHORIZATION, "token " + appProperties.getErpNextApiKey() + ":" + appProperties.getErpNextApiSecret());
+
+            HttpEntity<Void> request = new HttpEntity<>(headers);
+
+            log.info("ERPNext GET start: path=/api/resource/Customer");
+            ResponseEntity<ERPNextCustomersDTO> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    request,
+                    ERPNextCustomersDTO.class
+            );
+            log.info("ERPNext GET done (Customer): status={}", response.getStatusCode().value());
+            return response.getBody();
+        } catch (RestClientResponseException ex) {
+            org.springframework.http.HttpStatusCode status = ex.getStatusCode();
+            String body = sanitizeForLog(ex.getResponseBodyAsString());
+
+            if (status.is5xxServerError()) {
+                log.error("ERPNext 5xx response (Customer): status={}, body={}", status.value(), body);
+                throw new UpstreamServerException("ERPNext server error (Customer)", status.value());
+            } else {
+                log.warn("ERPNext 4xx response (Customer): status={}, body={}", status.value(), body);
+                throw new UpstreamClientException("ERPNext rejected Customer request", status.value());
+            }
+        } catch (ResourceAccessException ex) {
+            log.warn("ERPNext access error (Customer): {}", rootMessage(ex));
+            throw new UpstreamTimeoutException("Timeout or connection issue to ERPNext (Customer)", ex);
+        } catch (Exception ex) {
+            log.error("Unexpected error calling ERPNext Customer: {}", rootMessage(ex), ex);
             throw ex;
         }
     }
