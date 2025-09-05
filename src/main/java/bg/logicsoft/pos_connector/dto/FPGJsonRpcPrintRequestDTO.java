@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class JsonRpcPrintRequestDTO {
+public class FPGJsonRpcPrintRequestDTO {
 
     private String jsonrpc = "2.0";
     private String method;

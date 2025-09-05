@@ -19,12 +19,12 @@ import java.util.Map;
 public class POSSaleController {
     private final ERPNextService erpNextService;
     private final ObjectMapper objectMapper;
-    private final FPGateService fpGateService;
+    //private final FPGateService fpGateService;
 
-    public POSSaleController(ERPNextService erpNextService, ObjectMapper objectMapper, FPGateService fpGateService) {
+    public POSSaleController(ERPNextService erpNextService, ObjectMapper objectMapper/*, FPGateService fpGateService*/) {
         this.erpNextService = erpNextService;
         this.objectMapper = objectMapper;
-        this.fpGateService = fpGateService;
+        /* this.fpGateService = fpGateService ;*/
     }
 
     @PostMapping("/pos-sale")
@@ -41,7 +41,7 @@ public class POSSaleController {
                 objectMapper.convertValue(erpResult, ERPNextSalesInvoiceResponseDTO.class);
         String invoiceName = invoiceResponseDTO.getData() != null ? invoiceResponseDTO.getData().getName() : null;
 
-        // 3) Submit invoice (change status)
+        // 3) send "Submit" command (change status of the invoice)
         Map<String, Object> submitResult = null;
         if (invoiceName != null && !invoiceName.isBlank()) {
             submitResult = erpNextService.submitSalesInvoice(invoiceName);

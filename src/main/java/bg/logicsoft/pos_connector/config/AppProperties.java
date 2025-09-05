@@ -43,6 +43,12 @@ public class AppProperties {
     @Value("${erpnext.mode-of-payment-EUR}")
     private String erpNextModeOfPaymentEUR;
 
+    @Value("${erpnext.price-list-BGN}")
+    private String erpNextPriceListBGN;
+
+    @Value("${erpnext.price-list-EUR}")
+    private String erpNextPriceListEUR;
+
     @Value("${erpnext.charge-type}")
     private String erpNextChargeType;
 

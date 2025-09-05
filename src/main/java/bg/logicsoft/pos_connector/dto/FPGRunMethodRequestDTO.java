@@ -8,11 +8,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class RunMethodRequestDTO {
+public class FPGRunMethodRequestDTO {
     @JsonProperty("run_method")
     private String runMethod;
 
-    public RunMethodRequestDTO(String runMethod) {
+    public FPGRunMethodRequestDTO(String runMethod) {
         this.runMethod = runMethod;
     }
 }

@@ -2,7 +2,7 @@ package bg.logicsoft.pos_connector.services;
 
 import bg.logicsoft.pos_connector.config.AppProperties;
 import bg.logicsoft.pos_connector.dto.ERPNextSalesInvoiceResponseDTO;
-import bg.logicsoft.pos_connector.dto.JsonRpcPrintRequestDTO;
+import bg.logicsoft.pos_connector.dto.FPGJsonRpcPrintRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
@@ -40,12 +40,12 @@ public class FPGateService {
     public Map<String, Object> printFiscalReceipt(ERPNextSalesInvoiceResponseDTO invoice) {
         final String endpoint = appProperties.getFpGateUrl(); // include path if your JSON-RPC endpoint isn't root
 
-        JsonRpcPrintRequestDTO requestBody = buildPrintRequestFromInvoiceResponse(invoice);
+        FPGJsonRpcPrintRequestDTO requestBody = buildPrintRequestFromInvoiceResponse(invoice);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<JsonRpcPrintRequestDTO> request = new HttpEntity<>(requestBody, headers);
+        HttpEntity<FPGJsonRpcPrintRequestDTO> request = new HttpEntity<>(requestBody, headers);
 
         try {
             log.info("FPGate JSON-RPC POST: method=PrintFiscalCheck, url={}", endpoint);
@@ -76,14 +76,14 @@ public class FPGateService {
     }
 
     // Converts ERPNext response to JSON-RPC print request
-    private JsonRpcPrintRequestDTO buildPrintRequestFromInvoiceResponse(ERPNextSalesInvoiceResponseDTO invoice) {
-        JsonRpcPrintRequestDTO req = new JsonRpcPrintRequestDTO();
+    private FPGJsonRpcPrintRequestDTO buildPrintRequestFromInvoiceResponse(ERPNextSalesInvoiceResponseDTO invoice) {
+        FPGJsonRpcPrintRequestDTO req = new FPGJsonRpcPrintRequestDTO();
         req.setJsonrpc("2.0");
         req.setMethod("PrintFiscalCheck");
         req.setId(1); // static correlation id; adjust if needed
 
-        JsonRpcPrintRequestDTO.Params params = new JsonRpcPrintRequestDTO.Params();
-        JsonRpcPrintRequestDTO.Printer printer = new JsonRpcPrintRequestDTO.Printer();
+        FPGJsonRpcPrintRequestDTO.Params params = new FPGJsonRpcPrintRequestDTO.Params();
+        FPGJsonRpcPrintRequestDTO.Printer printer = new FPGJsonRpcPrintRequestDTO.Printer();
         printer.setId("PR1"); // adjust to your configured printer ID
         params.setPrinter(printer);
         params.setCommand("PrintFiscalCheck");
