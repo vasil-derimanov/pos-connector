@@ -10,23 +10,24 @@ server:
 
 # ERPNext
 erpnext:
-  url: "http://site15.local:8001"
-  api-key: "0175434ef147c4b"
-  api-secret: "afede6137335392"
+  url: "http://10.0.204.174"
+  api-key: "cb02af5931214ce"
+  api-secret: "101a8ace09f0ff1"
 
   # Sales Invoice details
-  pos-warehouse: "POS Склад 2 - CE2"
-  pos-profile-BGN: "POS profile BGN"
-  pos-profile-EUR: "POS profile EUR"
+  pos-warehouse: "POS Склад 1 - L"
+  pos-profile-BGN: "pos profile BGN"
+  pos-profile-EUR: "pos profile EUR"
   mode-of-payment-BGN: "Cash BGN"
   mode-of-payment-EUR: "Cash EUR"
-  price-list-BGN: "Standard Selling BGN"
-  price-list-EUR: "Standard Selling EUR"
-  company: "Company-2 EUR"
-  debit-to-BGN: "Debtors CE2 BGN - CE2"
-  debit-to-EUR: "Debtors - CE2"
+  price-list-BGN: "pos sales BGN"
+  price-list-EUR: "pos sales EUR"
+  company: "LogicSoft"
+  debit-to-BGN: "1310 - Debtors - L"
+  debit-to-EUR: "1311 - Debtors EUR - L"
   charge-type: "On Net Total"
 
 # Fiscal Printer Gate
 fpgate:
   url: "http://localhost:8182"
+

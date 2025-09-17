@@ -1,0 +1,33 @@
+# Application
+spring:
+  config:
+    encoding: UTF-8
+  application:
+    name: pos-connector
+
+server:
+  port: 8080
+
+# ERPNext
+erpnext:
+  url: "http://site15.local:8001"
+  api-key: "0175434ef147c4b"
+  api-secret: "afede6137335392"
+
+  # Sales Invoice details
+  pos-warehouse: "POS Склад 2 - CE2"
+  pos-profile-BGN: "POS profile BGN"
+  pos-profile-EUR: "POS profile EUR"
+  mode-of-payment-BGN: "Cash BGN"
+  mode-of-payment-EUR: "Cash EUR"
+  price-list-BGN: "Standard Selling BGN"
+  price-list-EUR: "Standard Selling EUR"
+  company: "Company-2 EUR"
+  debit-to-BGN: "Debtors CE2 BGN - CE2"
+  debit-to-EUR: "Debtors - CE2"
+  charge-type: "On Net Total"
+
+# Fiscal Printer Gate
+fpgate:
+  url: "http://localhost:8182"
+
