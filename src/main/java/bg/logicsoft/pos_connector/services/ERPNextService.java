@@ -1,9 +1,10 @@
 package bg.logicsoft.pos_connector.services;
 
 import bg.logicsoft.pos_connector.config.AppProperties;
-import bg.logicsoft.pos_connector.dto.ERPNextCustomersDTO;
+import bg.logicsoft.pos_connector.dto.CustomersDTO;
 import bg.logicsoft.pos_connector.dto.ERPNextItemsPriceDTO;
 import bg.logicsoft.pos_connector.dto.ERPNextSalesInvoiceDTO;
+import bg.logicsoft.pos_connector.dto.EmployeesDTO;
 import bg.logicsoft.pos_connector.exceptions.UpstreamClientException;
 import bg.logicsoft.pos_connector.exceptions.UpstreamServerException;
 import bg.logicsoft.pos_connector.exceptions.UpstreamTimeoutException;
@@ -194,7 +195,7 @@ public class ERPNextService {
     /**
      * Fetch customers with selected fields, mapped to ERPNextCustomersDTO.
      */
-    public ERPNextCustomersDTO getCustomers() {
+    public CustomersDTO getCustomers() {
         List<String> fields = Arrays.asList("name", "customer_name", "customer_type", "tax_id", "primary_address");
         try {
             String fieldsJson = toJson(fields);
@@ -211,11 +212,11 @@ public class ERPNextService {
             HttpEntity<Void> request = new HttpEntity<>(headers);
 
             log.info("ERPNext GET start: path=/api/resource/Customer");
-            ResponseEntity<ERPNextCustomersDTO> response = restTemplate.exchange(
+            ResponseEntity<CustomersDTO> response = restTemplate.exchange(
                     url,
                     HttpMethod.GET,
                     request,
-                    ERPNextCustomersDTO.class
+                    CustomersDTO.class
             );
             log.info("ERPNext GET done (Customer): status={}", response.getStatusCode().value());
             return response.getBody();
@@ -235,6 +236,52 @@ public class ERPNextService {
             throw new UpstreamTimeoutException("Timeout or connection issue to ERPNext (Customer)", ex);
         } catch (Exception ex) {
             log.error("Unexpected error calling ERPNext Customer: {}", rootMessage(ex), ex);
+            throw ex;
+        }
+    }
+
+    public EmployeesDTO getCashers(String designation) {
+        List<String> fields = Arrays.asList("name", "employee_name", "designation");
+        try {
+            String fieldsJson = toJson(fields);
+            String filtersJson = toJson(List.of(List.of("designation", "=", designation)));
+
+            String url = appProperties.getErpNextUrl()
+                    + "/api/resource/Employee"
+                    + "?filters=" + filtersJson
+                    + "&fields=" + fieldsJson;
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set(HttpHeaders.AUTHORIZATION, "token " + appProperties.getErpNextApiKey() + ":" + appProperties.getErpNextApiSecret());
+
+            HttpEntity<Void> request = new HttpEntity<>(headers);
+
+            log.info("ERPNext GET start: path=/api/resource/Employee, designation={}", designation);
+            ResponseEntity<EmployeesDTO> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    request,
+                    EmployeesDTO.class
+            );
+            log.info("ERPNext GET done (Employee): status={}", response.getStatusCode().value());
+            return response.getBody();
+        } catch (RestClientResponseException ex) {
+            org.springframework.http.HttpStatusCode status = ex.getStatusCode();
+            String body = sanitizeForLog(ex.getResponseBodyAsString());
+
+            if (status.is5xxServerError()) {
+                log.error("ERPNext 5xx response (Employee): status={}, body={}", status.value(), body);
+                throw new UpstreamServerException("ERPNext server error (Employee)", status.value());
+            } else {
+                log.warn("ERPNext 4xx response (Employee): status={}, body={}", status.value(), body);
+                throw new UpstreamClientException("ERPNext rejected Employee request", status.value());
+            }
+        } catch (ResourceAccessException ex) {
+            log.warn("ERPNext access error (Employee): {}", rootMessage(ex));
+            throw new UpstreamTimeoutException("Timeout or connection issue to ERPNext (Employee)", ex);
+        } catch (Exception ex) {
+            log.error("Unexpected error calling ERPNext Employee: {}", rootMessage(ex), ex);
             throw ex;
         }
     }

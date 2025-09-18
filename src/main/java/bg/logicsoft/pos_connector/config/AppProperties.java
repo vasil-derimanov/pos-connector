@@ -52,6 +52,9 @@ public class AppProperties {
     @Value("${erpnext.charge-type}")
     private String erpNextChargeType;
 
+    @Value("${erpnext.employee.designation}")
+    private String erpNextEmployeeDesignation;
+
     /* Fiscal Printer Gate configuration */
     @Value("${fpgate.url}")
     private String fpGateUrl;

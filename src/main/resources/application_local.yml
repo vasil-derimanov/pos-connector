@@ -27,6 +27,10 @@ erpnext:
   debit-to-EUR: "Debtors - CE2"
   charge-type: "On Net Total"
 
+  # Employee - Cashers
+  employee:
+    designation: "POS cesher"
+
 # Fiscal Printer Gate
 fpgate:
   url: "http://localhost:8182"

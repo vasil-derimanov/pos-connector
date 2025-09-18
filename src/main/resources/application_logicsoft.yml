@@ -34,4 +34,3 @@ erpnext:
 # Fiscal Printer Gate
 fpgate:
   url: "http://localhost:8182"
-
