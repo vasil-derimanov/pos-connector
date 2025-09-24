@@ -20,8 +20,8 @@ erpnext:
   pos-profile-EUR: "POS profile EUR"
   mode-of-payment-BGN: "Cash BGN"
   mode-of-payment-EUR: "Cash EUR"
-  price-list-BGN: "Standard Selling BGN"
-  price-list-EUR: "Standard Selling EUR"
+  price-list-BGN: "pos sales BGN"
+  price-list-EUR: "pos sales EUR"
   company: "Company-2 EUR"
   debit-to-BGN: "Debtors CE2 BGN - CE2"
   debit-to-EUR: "Debtors - CE2"
@@ -34,4 +34,3 @@ erpnext:
 # Fiscal Printer Gate
 fpgate:
   url: "http://localhost:8182"
-

@@ -42,5 +42,11 @@ public class POSItemPricesDTO {
 
         @JsonProperty("packing_unit")
         private Integer packingUnit;
+
+        @JsonProperty("tax_name")
+        private String taxName;
+
+        @JsonProperty("tax_rate")
+        private BigDecimal taxRate;
     }
 }

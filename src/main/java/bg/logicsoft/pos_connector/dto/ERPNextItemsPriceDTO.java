@@ -14,7 +14,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ERPNextItemsPriceDTO {
 
-    private List<Item> data;
+    private List<Item> message;
 
     @Getter
     @Setter
@@ -37,5 +37,11 @@ public class ERPNextItemsPriceDTO {
 
         @JsonProperty("packing_unit")
         private Integer packingUnit;
+
+        @JsonProperty("tax_name")
+        private String taxName;
+
+        @JsonProperty("tax_rate")
+        private BigDecimal taxRate;
     }
 }

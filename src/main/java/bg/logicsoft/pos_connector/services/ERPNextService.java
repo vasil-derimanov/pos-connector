@@ -142,20 +142,11 @@ public class ERPNextService {
      * Fetch item prices for the given price list and fields, mapped to ERPNextItemsPriceListDTO.
      */
     public ERPNextItemsPriceDTO getItemPrices(String priceList) {
-        List<String> fields = Arrays.asList("name", "item_code", "item_name", "uom", "price_list_rate", "currency", "packing_unit");
         try {
-            String base = appProperties.getErpNextUrl();
-
-            String fieldsJson = toJson(fields);
-            String filtersJson = toJson(
-                    List.of(List.of("price_list", "=", priceList))
-            );
-
-            // Build URL to match Postman: encoded path, raw JSON in query
             String url = appProperties.getErpNextUrl()
-                    + "/api/resource/Item Price"
-                    + "?fields=" + fieldsJson
-                    + "&filters=" + filtersJson;
+                + "/api/method/custom_app.pos-api.get_item_prices.get_item_prices_with_vat"
+                + "?price_list=" + priceList
+                + "&company=" + appProperties.getErpNextCompany();
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);

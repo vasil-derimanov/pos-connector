@@ -32,8 +32,8 @@ public class POSItemPricesController {
 
         List<POSItemPricesDTO.PriceList> priceLists = new ArrayList<>();
 
-        addPriceListIfAny(priceLists, priceListBGN, bgn);
-        addPriceListIfAny(priceLists, priceListEUR, eur);
+        addPriceListIfAny(priceLists, priceListBGN, "BGN", bgn);
+        addPriceListIfAny(priceLists, priceListEUR, "EUR", eur);
 
         POSItemPricesDTO result = new POSItemPricesDTO();
         result.setData(priceLists);
@@ -42,21 +42,16 @@ public class POSItemPricesController {
 
     private void addPriceListIfAny(List<POSItemPricesDTO.PriceList> target,
                                    String priceListName,
+                                   String currency,
                                    ERPNextItemsPriceDTO source) {
-        if (source == null || source.getData() == null || source.getData().isEmpty()) {
+        if (source == null || source.getMessage() == null || source.getMessage().isEmpty()) {
             return;
         }
         POSItemPricesDTO.PriceList pl = new POSItemPricesDTO.PriceList();
         pl.setName(priceListName);
-
-        // Determine currency from first item if present, otherwise try to infer from price list name
-        String currency = source.getData().get(0).getCurrency();
-        if (currency == null || currency.isBlank()) {
-            currency = deriveCurrencyFromName(priceListName);
-        }
         pl.setCurrency(currency);
 
-        pl.setItems(mapItems(source.getData()));
+        pl.setItems(mapItems(source.getMessage()));
         target.add(pl);
     }
 
@@ -72,14 +67,8 @@ public class POSItemPricesController {
         d.setItemName(s.getItemName());
         d.setPriceListRate(s.getPriceListRate());
         d.setPackingUnit(s.getPackingUnit());
+        d.setTaxName(s.getTaxName());
+        d.setTaxRate(s.getTaxRate());
         return d;
-    }
-
-    private String deriveCurrencyFromName(String priceListName) {
-        String nameLower = priceListName == null ? "" : priceListName.toLowerCase();
-        if (nameLower.contains("eur")) return "EUR";
-        if (nameLower.contains("bgn")) return "BGN";
-        return ""; // Unknown; leave blank if not derivable
-        // Alternatively, default to appProperties.getErpNextPriceListCurrency... if you have it
     }
 }
