@@ -101,7 +101,6 @@ public class ERPNextService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set(HttpHeaders.AUTHORIZATION, "token " + appProperties.getErpNextApiKey() + ":" + appProperties.getErpNextApiSecret());
 
-        // Submit via method endpoint to avoid DocType-in-path issues
         Map<String, Object> body = Map.of(
                 "doctype", "Sales Invoice",
                 "name", invoiceName
@@ -191,7 +190,6 @@ public class ERPNextService {
         try {
             String fieldsJson = toJson(fields);
 
-            // Build URL to match ERPNext expectations: encoded path, raw JSON in query
             String url = appProperties.getErpNextUrl()
                     + "/api/resource/Customer"
                     + "?fields=" + fieldsJson;
@@ -231,11 +229,19 @@ public class ERPNextService {
         }
     }
 
-    public EmployeesDTO getCashers(String designation) {
+    public EmployeesDTO getCashers() {
+        String designation = appProperties.getErpNextEmployeeDesignation();
         List<String> fields = Arrays.asList("name", "employee_name", "designation");
         try {
             String fieldsJson = toJson(fields);
-            String filtersJson = toJson(List.of(List.of("designation", "=", designation)));
+            String filtersJson =
+                toJson(
+                    List.of(
+                        List.of("designation", "=", designation),
+                        List.of("status", "=", "active"),
+                        List.of("company", "=", appProperties.getErpNextCompany())
+                    )
+                );
 
             String url = appProperties.getErpNextUrl()
                     + "/api/resource/Employee"
@@ -276,7 +282,62 @@ public class ERPNextService {
             throw ex;
         }
     }
+    //----------------------------------
+    public EmployeesDTO getCasherByNumber(String employeeNumber) {
+        String designation = appProperties.getErpNextEmployeeDesignation();
+        List<String> fields = Arrays.asList("name", "employee_name", "designation");
+        try {
+            String fieldsJson = toJson(fields);
+            String filtersJson =
+                    toJson(
+                            List.of(
+                                    List.of("designation", "=", designation),
+                                    List.of("status", "=", "active"),
+                                    List.of("company", "=", appProperties.getErpNextCompany()),
+                                    List.of("employee_number", "=", employeeNumber)
+                            )
+                    );
 
+            String url = appProperties.getErpNextUrl()
+                    + "/api/resource/Employee"
+                    + "?filters=" + filtersJson
+                    + "&fields=" + fieldsJson;
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set(HttpHeaders.AUTHORIZATION, "token " + appProperties.getErpNextApiKey() + ":" + appProperties.getErpNextApiSecret());
+
+            HttpEntity<Void> request = new HttpEntity<>(headers);
+
+            log.info("ERPNext GET start: path=/api/resource/Employee, designation={}, employee_number={}", designation, employeeNumber);
+            ResponseEntity<EmployeesDTO> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    request,
+                    EmployeesDTO.class
+            );
+            log.info("ERPNext GET done (Employee By Number): status={}", response.getStatusCode().value());
+            return response.getBody();
+        } catch (RestClientResponseException ex) {
+            org.springframework.http.HttpStatusCode status = ex.getStatusCode();
+            String body = sanitizeForLog(ex.getResponseBodyAsString());
+
+            if (status.is5xxServerError()) {
+                log.error("ERPNext 5xx response (Employee By Number): status={}, body={}", status.value(), body);
+                throw new UpstreamServerException("ERPNext server error (Employee)", status.value());
+            } else {
+                log.warn("ERPNext 4xx response (Employee By Number): status={}, body={}", status.value(), body);
+                throw new UpstreamClientException("ERPNext rejected Employee request", status.value());
+            }
+        } catch (ResourceAccessException ex) {
+            log.warn("ERPNext access error (Employee By Number): {}", rootMessage(ex));
+            throw new UpstreamTimeoutException("Timeout or connection issue to ERPNext (Employee)", ex);
+        } catch (Exception ex) {
+            log.error("Unexpected error calling ERPNext Employee: {}", rootMessage(ex), ex);
+            throw ex;
+        }
+    }
+    //-----------------------------------
     // Helper to serialize query objects without forcing callers to handle checked exceptions
     private String toJson(Object value) {
         try {

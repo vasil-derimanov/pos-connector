@@ -4,7 +4,6 @@ import bg.logicsoft.pos_connector.dto.ERPNextSalesInvoiceDTO;
 import bg.logicsoft.pos_connector.dto.ERPNextSalesInvoiceResponseDTO;
 import bg.logicsoft.pos_connector.dto.POSSaleDTO;
 import bg.logicsoft.pos_connector.services.ERPNextService;
-import bg.logicsoft.pos_connector.services.FPGateService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

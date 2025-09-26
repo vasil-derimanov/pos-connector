@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -24,7 +25,8 @@ public class GlobalExceptionHandler {
                 "error", "VALIDATION_ERROR",
                 "message", "Request validation failed",
                 "details", ex.getBindingResult().getAllErrors().stream()
-                        .map(err -> err.getDefaultMessage()).toList()
+                        .map(err -> err.getDefaultMessage()).toList(),
+                "original_message", ex.getMessage()
         ));
     }
 
@@ -33,7 +35,8 @@ public class GlobalExceptionHandler {
         log.warn("Upstream client error: status={}, message={}", ex.getStatusCode(), ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(Map.of(
                 "error", "UPSTREAM_CLIENT_ERROR",
-                "message", "Request was rejected by upstream service"
+                "message", "Request was rejected by upstream service",
+                "original_message", ex.getMessage()
         ));
     }
 
@@ -42,7 +45,9 @@ public class GlobalExceptionHandler {
         log.error("Upstream server error: status={}, message={}", ex.getStatusCode(), ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(Map.of(
                 "error", "UPSTREAM_SERVER_ERROR",
-                "message", "Upstream service failed"
+                "message", "Upstream service failed",
+                "source","GlobalExceptionHandler",
+                "original_message", ex.getMessage()
         ));
     }
 
@@ -51,7 +56,9 @@ public class GlobalExceptionHandler {
         log.warn("Upstream timeout: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).body(Map.of(
                 "error", "UPSTREAM_TIMEOUT",
-                "message", "Upstream service timed out"
+                "message", "Upstream service timed out",
+                "source","GlobalExceptionHandler",
+                "original_message", ex.getMessage()
         ));
     }
 
@@ -60,16 +67,32 @@ public class GlobalExceptionHandler {
         log.warn("Bad request: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
                 "error", "BAD_REQUEST",
-                "message", ex.getMessage()
+                "message", ex.getMessage(),
+                "source","GlobalExceptionHandler",
+                "original_message", ex.getMessage()
         ));
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<Map<String, String>> handleMissingParam(MissingServletRequestParameterException ex) {
+        return ResponseEntity.badRequest().body(
+                Map.of(
+                        "error", "MISSING_PARAMETER",
+                        "message", "Required parameter '" + ex.getParameterName() + "' is missing",
+                        "source","GlobalExceptionHandler",
+                        "original_message", ex.getMessage()
+                )
+        );
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleUnexpected(Exception ex) {
-        log.error("Unhandled exception", ex);
+        log.error("Unhandled exception in 'GlobalExceptionHandler'", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
                 "error", "INTERNAL_ERROR",
-                "message", "Unexpected error"
+                "message", "Unhandled exception in 'GlobalExceptionHandler'",
+                "source","GlobalExceptionHandler",
+                "original_message", ex.getMessage()
         ));
     }
 }
