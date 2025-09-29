@@ -8,7 +8,9 @@ APP="pos-connector"
 
 cd "$SCRIPT_PATH"/.. || exit
 
-docker build --build-arg deployment=local -f build/Dockerfile -t "$APP" .
+cp src/main/resources/application_logicsoft.yml src/main/resources/application.yml
+
+docker build --build-arg deployment=logicsoft -f build/Dockerfile -t "$APP" .
 
 docker stop "$APP" || true
 docker rm "$APP" || true
