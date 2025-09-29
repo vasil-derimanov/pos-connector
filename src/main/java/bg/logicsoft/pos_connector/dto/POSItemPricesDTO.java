@@ -20,7 +20,6 @@ public class POSItemPricesDTO {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class PriceList {
         private String name;
-        private String currency;
         private List<Item> items;
     }
 

@@ -22,8 +22,8 @@ public class AppProperties {
     @Value("${erpnext.pos-warehouse}")
     private String erpNextPOSWarehouse;
 
-    @Value("${erpnext.pos-profile-BGN}")
-    private String erpNextPOSProfileBGN;
+    //@Value("${erpnext.pos-profile-BGN}")
+    //private String erpNextPOSProfileBGN;
 
     @Value("${erpnext.pos-profile-EUR}")
     private String erpNextPOSProfileEUR;
@@ -31,20 +31,21 @@ public class AppProperties {
     @Value("${erpnext.company}")
     private String erpNextCompany;
 
-    @Value("${erpnext.debit-to-BGN}")
-    private String erpNextDebitToBGN;
+    //@Value("${erpnext.debit-to-BGN}")
+    //private String erpNextDebitToBGN;
 
     @Value("${erpnext.debit-to-EUR}")
     private String erpNextDebitToEUR;
 
-    @Value("${erpnext.mode-of-payment-BGN}")
-    private String erpNextModeOfPaymentBGN;
+    //@Value("${erpnext.mode-of-payment-BGN}")
+    //private String erpNextModeOfPaymentBGN;
 
+    // TODO: should come from end-point and must be list ?!?!?!?!?!
     @Value("${erpnext.mode-of-payment-EUR}")
     private String erpNextModeOfPaymentEUR;
 
-    @Value("${erpnext.price-list-BGN}")
-    private String erpNextPriceListBGN;
+    //@Value("${erpnext.price-list-BGN}")
+    //private String erpNextPriceListBGN;
 
     @Value("${erpnext.price-list-EUR}")
     private String erpNextPriceListEUR;
@@ -54,6 +55,9 @@ public class AppProperties {
 
     @Value("${erpnext.employee.designation}")
     private String erpNextEmployeeDesignation;
+
+    @Value("${erpnext.currency}")
+    private String erpNextCurrency;
 
     /* Fiscal Printer Gate configuration */
     @Value("${fpgate.url}")
