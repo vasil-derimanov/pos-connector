@@ -15,16 +15,16 @@ erpnext:
   api-secret: "101a8ace09f0ff1"
 
   # Sales Invoice details
-  pos-warehouse: "POS Склад 2 - CE2"
+  pos-warehouse: "POS Склад 1 - L"
   #pos-profile-BGN: "POS profile BGN"
-  pos-profile-EUR: "POS profile EUR"
+  pos-profile-EUR: "pos profile EUR"
   #mode-of-payment-BGN: "Cash BGN"
   mode-of-payment-EUR: "Cash EUR" # ?!?!?!?!?!?!
   #price-list-BGN: "pos sales BGN"
   price-list-EUR: "pos sales EUR"
-  company: "Company-2 EUR"
-  #debit-to-BGN: "Debtors CE2 BGN - CE2"
-  debit-to-EUR: "Debtors - CE2" # ?!?!?!?!?!?!
+  company: "LogicSoft"
+  #debit-to-BGN: "1310 - Debtors - L"
+  debit-to-EUR: "1311 - Debtors EUR - L" # ?!?!?!?!?!?!
   charge-type: "On Net Total"   # TODO: probably should be for every row
   currency: "EUR"
 
