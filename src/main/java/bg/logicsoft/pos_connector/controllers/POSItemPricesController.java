@@ -24,16 +24,16 @@ public class POSItemPricesController {
 
     @GetMapping("/item-prices")
     public ResponseEntity<POSItemPricesDTO> getItemPrices() {
-        String priceListBGN = appProperties.getErpNextPriceListBGN();
+        //String priceListBGN = appProperties.getErpNextPriceListBGN();
         String priceListEUR = appProperties.getErpNextPriceListEUR();
 
-        ERPNextItemsPriceDTO bgn = erpNextService.getItemPrices(priceListBGN);
-        ERPNextItemsPriceDTO eur = erpNextService.getItemPrices(priceListEUR);
+        //ERPNextItemsPriceDTO bgn = erpNextService.getItemPrices(priceListBGN);
+        ERPNextItemsPriceDTO plEUR = erpNextService.getItemPrices(priceListEUR);
 
         List<POSItemPricesDTO.PriceList> priceLists = new ArrayList<>();
 
-        addPriceListIfAny(priceLists, priceListBGN, "BGN", bgn);
-        addPriceListIfAny(priceLists, priceListEUR, "EUR", eur);
+        //addPriceListIfAny(priceLists, priceListBGN, "BGN", bgn);
+        addPriceListIfAny(priceLists, priceListEUR,  plEUR);
 
         POSItemPricesDTO result = new POSItemPricesDTO();
         result.setData(priceLists);
@@ -42,14 +42,12 @@ public class POSItemPricesController {
 
     private void addPriceListIfAny(List<POSItemPricesDTO.PriceList> target,
                                    String priceListName,
-                                   String currency,
                                    ERPNextItemsPriceDTO source) {
         if (source == null || source.getMessage() == null || source.getMessage().isEmpty()) {
             return;
         }
         POSItemPricesDTO.PriceList pl = new POSItemPricesDTO.PriceList();
         pl.setName(priceListName);
-        pl.setCurrency(currency);
 
         pl.setItems(mapItems(source.getMessage()));
         target.add(pl);

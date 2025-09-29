@@ -27,9 +27,9 @@ erpnext:
   debit-to-EUR: "Debtors - CE2"
   charge-type: "On Net Total"
 
-  # Employee - Cashers
+  # Employee - Cashiers
   employee:
-    designation: "POS cesher"
+    designation: "POS cashier"
 
 # Fiscal Printer Gate
 fpgate:

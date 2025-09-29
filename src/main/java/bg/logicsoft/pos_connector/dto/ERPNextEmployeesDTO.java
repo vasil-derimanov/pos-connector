@@ -10,19 +10,20 @@ import java.util.List;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EmployeesDTO {
+public class ERPNextEmployeesDTO {
 
-    private List<Item> data;
+    private List<Employee> data;
 
     @Getter
     @Setter
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Item {
+    public static class Employee {
         private String name;
 
         @JsonProperty("employee_name")
         private String employeeName;
 
-        private String designation;
+        @JsonProperty("employee_number")
+        private String employeeNumber;
     }
 }

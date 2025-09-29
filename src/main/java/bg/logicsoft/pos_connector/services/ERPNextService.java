@@ -4,7 +4,7 @@ import bg.logicsoft.pos_connector.config.AppProperties;
 import bg.logicsoft.pos_connector.dto.CustomersDTO;
 import bg.logicsoft.pos_connector.dto.ERPNextItemsPriceDTO;
 import bg.logicsoft.pos_connector.dto.ERPNextSalesInvoiceDTO;
-import bg.logicsoft.pos_connector.dto.EmployeesDTO;
+import bg.logicsoft.pos_connector.dto.ERPNextEmployeesDTO;
 import bg.logicsoft.pos_connector.exceptions.UpstreamClientException;
 import bg.logicsoft.pos_connector.exceptions.UpstreamServerException;
 import bg.logicsoft.pos_connector.exceptions.UpstreamTimeoutException;
@@ -229,9 +229,9 @@ public class ERPNextService {
         }
     }
 
-    public EmployeesDTO getCashers() {
+    public ERPNextEmployeesDTO getCashiers() {
         String designation = appProperties.getErpNextEmployeeDesignation();
-        List<String> fields = Arrays.asList("name", "employee_name", "designation");
+        List<String> fields = Arrays.asList("name", "employee_name", "employee_number");
         try {
             String fieldsJson = toJson(fields);
             String filtersJson =
@@ -255,11 +255,11 @@ public class ERPNextService {
             HttpEntity<Void> request = new HttpEntity<>(headers);
 
             log.info("ERPNext GET start: path=/api/resource/Employee, designation={}", designation);
-            ResponseEntity<EmployeesDTO> response = restTemplate.exchange(
+            ResponseEntity<ERPNextEmployeesDTO> response = restTemplate.exchange(
                     url,
                     HttpMethod.GET,
                     request,
-                    EmployeesDTO.class
+                    ERPNextEmployeesDTO.class
             );
             log.info("ERPNext GET done (Employee): status={}", response.getStatusCode().value());
             return response.getBody();
@@ -282,10 +282,10 @@ public class ERPNextService {
             throw ex;
         }
     }
-    //----------------------------------
-    public EmployeesDTO getCasherByNumber(String employeeNumber) {
+
+    public ERPNextEmployeesDTO getCashierByNumber(String employeeNumber) {
         String designation = appProperties.getErpNextEmployeeDesignation();
-        List<String> fields = Arrays.asList("name", "employee_name", "designation");
+        List<String> fields = Arrays.asList("name", "employee_name");
         try {
             String fieldsJson = toJson(fields);
             String filtersJson =
@@ -310,11 +310,11 @@ public class ERPNextService {
             HttpEntity<Void> request = new HttpEntity<>(headers);
 
             log.info("ERPNext GET start: path=/api/resource/Employee, designation={}, employee_number={}", designation, employeeNumber);
-            ResponseEntity<EmployeesDTO> response = restTemplate.exchange(
+            ResponseEntity<ERPNextEmployeesDTO> response = restTemplate.exchange(
                     url,
                     HttpMethod.GET,
                     request,
-                    EmployeesDTO.class
+                    ERPNextEmployeesDTO.class
             );
             log.info("ERPNext GET done (Employee By Number): status={}", response.getStatusCode().value());
             return response.getBody();
@@ -337,7 +337,7 @@ public class ERPNextService {
             throw ex;
         }
     }
-    //-----------------------------------
+
     // Helper to serialize query objects without forcing callers to handle checked exceptions
     private String toJson(Object value) {
         try {

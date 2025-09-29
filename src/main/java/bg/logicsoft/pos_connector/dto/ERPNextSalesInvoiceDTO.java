@@ -11,9 +11,6 @@ import java.util.List;
 @Getter
 @Setter
 public class ERPNextSalesInvoiceDTO {
-
-    private static final String CURRENCY_BGN = "BGN";
-    private static final String CURRENCY_EUR = "EUR";
     private static final String DOCTYPE_SALES_INVOICE = "Sales Invoice";
 
     private String doctype;
@@ -39,24 +36,25 @@ public class ERPNextSalesInvoiceDTO {
 
     public ERPNextSalesInvoiceDTO() {
     }
+// TODO: Remove
+//    private static String resolvePosProfileForCurrency(String currency, AppProperties appProperties) {
+//        if (currency == null) return null;
+//        return switch (currency) {
+//            case CURRENCY_BGN -> sanitizePropertyValue(appProperties.getErpNextPOSProfileBGN());
+//            case CURRENCY_EUR -> sanitizePropertyValue(appProperties.getErpNextPOSProfileEUR());
+//            default -> null;
+//        };
+//    }
 
-    private static String resolvePosProfileForCurrency(String currency, AppProperties appProperties) {
-        if (currency == null) return null;
-        return switch (currency) {
-            case CURRENCY_BGN -> sanitizePropertyValue(appProperties.getErpNextPOSProfileBGN());
-            case CURRENCY_EUR -> sanitizePropertyValue(appProperties.getErpNextPOSProfileEUR());
-            default -> null;
-        };
-    }
-
-    private static String resolveDebitToForCurrency(String currency, AppProperties appProperties) {
-        if (currency == null) return null;
-        return switch (currency) {
-            case CURRENCY_BGN -> sanitizePropertyValue(appProperties.getErpNextDebitToBGN());
-            case CURRENCY_EUR -> sanitizePropertyValue(appProperties.getErpNextDebitToEUR());
-            default -> null;
-        };
-    }
+    // TODO: Remove
+//    private static String resolveDebitToForCurrency(String currency, AppProperties appProperties) {
+//        if (currency == null) return null;
+//        return switch (currency) {
+//            case CURRENCY_BGN -> sanitizePropertyValue(appProperties.getErpNextDebitToBGN());
+//            case CURRENCY_EUR -> sanitizePropertyValue(appProperties.getErpNextDebitToEUR());
+//            default -> null;
+//        };
+//    }
 
     // trims whitespace and removes surrounding single/double quotes, if present
     private static String sanitizePropertyValue(String value) {
@@ -83,11 +81,11 @@ public class ERPNextSalesInvoiceDTO {
         this.setCustomer(sale.getCustomer());
         this.setCompany(sanitizePropertyValue(appProperties.getErpNextCompany()));
         this.setPostingDate(sale.getPostingDate());
-        this.setCurrency(sanitizePropertyValue(sale.getCurrency()));
+        this.setCurrency(appProperties.getErpNextCurrency());
 
-        final String currency = this.getCurrency();
-        this.setPosProfile(resolvePosProfileForCurrency(currency, appProperties));
-        this.setDebitTo(resolveDebitToForCurrency(currency, appProperties));
+        //final String currency = this.getCurrency();
+        this.setPosProfile(sanitizePropertyValue(appProperties.getErpNextPOSProfileEUR()));
+        this.setDebitTo(sanitizePropertyValue(appProperties.getErpNextDebitToEUR())); // TODO: probably not needed anymore
         this.setSetWarehouse(sanitizePropertyValue(appProperties.getErpNextPOSWarehouse()));
         this.setUpdateStock(1);
         this.setIsPos(1);
