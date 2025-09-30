@@ -1,10 +1,7 @@
 package bg.logicsoft.pos_connector.services;
 
 import bg.logicsoft.pos_connector.config.AppProperties;
-import bg.logicsoft.pos_connector.dto.CustomersDTO;
-import bg.logicsoft.pos_connector.dto.ERPNextItemsPriceDTO;
-import bg.logicsoft.pos_connector.dto.ERPNextSalesInvoiceDTO;
-import bg.logicsoft.pos_connector.dto.ERPNextEmployeesDTO;
+import bg.logicsoft.pos_connector.dto.*;
 import bg.logicsoft.pos_connector.exceptions.UpstreamClientException;
 import bg.logicsoft.pos_connector.exceptions.UpstreamServerException;
 import bg.logicsoft.pos_connector.exceptions.UpstreamTimeoutException;
@@ -153,7 +150,7 @@ public class ERPNextService {
 
             HttpEntity<Void> request = new HttpEntity<>(headers);
 
-            log.info("ERPNext GET start: path=/api/resource/Item Price, price_list={}", priceList);
+            log.info("ERPNext GET start: path=/api/method/custom_app.pos-api.get_item_prices.get_item_prices_with_vat, price_list={}", priceList);
             ResponseEntity<ERPNextItemsPriceDTO> response = restTemplate.exchange(
                     url,
                     HttpMethod.GET,
@@ -283,23 +280,14 @@ public class ERPNextService {
         }
     }
 
-    public ERPNextEmployeesDTO getCashierByNumber(String employeeNumber) {
-        String designation = appProperties.getErpNextEmployeeDesignation();
-        List<String> fields = Arrays.asList("name", "employee_name");
+    public POSModeOfPaymentDTO getModeOfPayment() {
+        List<String> fields = Arrays.asList("name");
         try {
             String fieldsJson = toJson(fields);
-            String filtersJson =
-                    toJson(
-                            List.of(
-                                    List.of("designation", "=", designation),
-                                    List.of("status", "=", "active"),
-                                    List.of("company", "=", appProperties.getErpNextCompany()),
-                                    List.of("employee_number", "=", employeeNumber)
-                            )
-                    );
+            String filtersJson = toJson(List.of(List.of("custom_used_by_pos", "=", "1")));
 
             String url = appProperties.getErpNextUrl()
-                    + "/api/resource/Employee"
+                    + "/api/resource/Mode of Payment"
                     + "?filters=" + filtersJson
                     + "&fields=" + fieldsJson;
 
@@ -309,31 +297,31 @@ public class ERPNextService {
 
             HttpEntity<Void> request = new HttpEntity<>(headers);
 
-            log.info("ERPNext GET start: path=/api/resource/Employee, designation={}, employee_number={}", designation, employeeNumber);
-            ResponseEntity<ERPNextEmployeesDTO> response = restTemplate.exchange(
+            log.info("ERPNext GET start: path=/api/resource/Mode of Payment");
+            ResponseEntity<POSModeOfPaymentDTO> response = restTemplate.exchange(
                     url,
                     HttpMethod.GET,
                     request,
-                    ERPNextEmployeesDTO.class
+                    POSModeOfPaymentDTO.class
             );
-            log.info("ERPNext GET done (Employee By Number): status={}", response.getStatusCode().value());
+            log.info("ERPNext GET done (Mode of Payment): status={}", response.getStatusCode().value());
             return response.getBody();
         } catch (RestClientResponseException ex) {
             org.springframework.http.HttpStatusCode status = ex.getStatusCode();
             String body = sanitizeForLog(ex.getResponseBodyAsString());
 
             if (status.is5xxServerError()) {
-                log.error("ERPNext 5xx response (Employee By Number): status={}, body={}", status.value(), body);
+                log.error("ERPNext 5xx response (Mode of Payment): status={}, body={}", status.value(), body);
                 throw new UpstreamServerException("ERPNext server error (Employee)", status.value());
             } else {
-                log.warn("ERPNext 4xx response (Employee By Number): status={}, body={}", status.value(), body);
-                throw new UpstreamClientException("ERPNext rejected Employee request", status.value());
+                log.warn("ERPNext 4xx response (Mode of Payment): status={}, body={}", status.value(), body);
+                throw new UpstreamClientException("ERPNext rejected Mode of Payment request", status.value());
             }
         } catch (ResourceAccessException ex) {
-            log.warn("ERPNext access error (Employee By Number): {}", rootMessage(ex));
-            throw new UpstreamTimeoutException("Timeout or connection issue to ERPNext (Employee)", ex);
+            log.warn("ERPNext access error (Mode of Payment): {}", rootMessage(ex));
+            throw new UpstreamTimeoutException("Timeout or connection issue to ERPNext (Mode of Payment)", ex);
         } catch (Exception ex) {
-            log.error("Unexpected error calling ERPNext Employee: {}", rootMessage(ex), ex);
+            log.error("Unexpected error calling ERPNext Mode of Payment: {}", rootMessage(ex), ex);
             throw ex;
         }
     }
@@ -360,4 +348,5 @@ public class ERPNextService {
         while (cur.getCause() != null) cur = cur.getCause();
         return cur.getMessage();
     }
+
 }

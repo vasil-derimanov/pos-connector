@@ -16,14 +16,9 @@ erpnext:
 
   # Sales Invoice details
   pos-warehouse: "POS Склад 1 - L"
-  #pos-profile-BGN: "POS profile BGN"
   pos-profile-EUR: "pos profile EUR"
-  #mode-of-payment-BGN: "Cash BGN"
-  mode-of-payment-EUR: "Cash EUR" # ?!?!?!?!?!?!
-  #price-list-BGN: "pos sales BGN"
   price-list-EUR: "pos sales EUR"
   company: "LogicSoft"
-  #debit-to-BGN: "1310 - Debtors - L"
   debit-to-EUR: "1311 - Debtors EUR - L" # ?!?!?!?!?!?!
   charge-type: "On Net Total"   # TODO: probably should be for every row
   currency: "EUR"

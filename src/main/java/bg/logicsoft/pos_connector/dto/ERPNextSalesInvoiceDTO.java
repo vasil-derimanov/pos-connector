@@ -36,25 +36,6 @@ public class ERPNextSalesInvoiceDTO {
 
     public ERPNextSalesInvoiceDTO() {
     }
-// TODO: Remove
-//    private static String resolvePosProfileForCurrency(String currency, AppProperties appProperties) {
-//        if (currency == null) return null;
-//        return switch (currency) {
-//            case CURRENCY_BGN -> sanitizePropertyValue(appProperties.getErpNextPOSProfileBGN());
-//            case CURRENCY_EUR -> sanitizePropertyValue(appProperties.getErpNextPOSProfileEUR());
-//            default -> null;
-//        };
-//    }
-
-    // TODO: Remove
-//    private static String resolveDebitToForCurrency(String currency, AppProperties appProperties) {
-//        if (currency == null) return null;
-//        return switch (currency) {
-//            case CURRENCY_BGN -> sanitizePropertyValue(appProperties.getErpNextDebitToBGN());
-//            case CURRENCY_EUR -> sanitizePropertyValue(appProperties.getErpNextDebitToEUR());
-//            default -> null;
-//        };
-//    }
 
     // trims whitespace and removes surrounding single/double quotes, if present
     private static String sanitizePropertyValue(String value) {
@@ -148,7 +129,7 @@ public class ERPNextSalesInvoiceDTO {
         private String itemCode;
         private double qty;
         private double rate;
-        private String warehouse;
+        private String warehouse;  // TODO : Probably not needed anymore
     }
 
     @Getter
