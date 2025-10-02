@@ -4,6 +4,7 @@ import bg.logicsoft.pos_connector.config.AppProperties;
 import bg.logicsoft.pos_connector.dto.ERPNextItemsPriceDTO;
 import bg.logicsoft.pos_connector.dto.POSItemPricesDTO;
 import bg.logicsoft.pos_connector.services.ERPNextService;
+import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -67,7 +68,9 @@ public class POSItemPricesController {
         d.setPackingUnit(s.getPackingUnit());
         d.setTaxName(s.getTaxName());
         d.setTaxRate(s.getTaxRate());
-        d.setImage(appProperties.getErpNextUrl() + s.getImage());
+        if (StringUtils.isNotBlank(s.getImage())) {
+            d.setImage(appProperties.getErpNextUrl() + s.getImage());
+        }
         return d;
     }
 }
