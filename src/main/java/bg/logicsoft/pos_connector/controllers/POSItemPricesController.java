@@ -67,7 +67,7 @@ public class POSItemPricesController {
         d.setPackingUnit(s.getPackingUnit());
         d.setTaxName(s.getTaxName());
         d.setTaxRate(s.getTaxRate());
-        d.setImage(s.getImage());
+        d.setImage(appProperties.getErpNextUrl() + s.getImage());
         return d;
     }
 }
