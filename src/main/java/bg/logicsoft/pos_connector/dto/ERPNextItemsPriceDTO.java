@@ -1,4 +1,3 @@
-// Java
 package bg.logicsoft.pos_connector.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -43,5 +42,7 @@ public class ERPNextItemsPriceDTO {
 
         @JsonProperty("tax_rate")
         private BigDecimal taxRate;
+
+        private String image;
     }
 }

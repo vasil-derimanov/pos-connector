@@ -36,7 +36,50 @@ public class ERPNextService {
                 .connectTimeout(Duration.ofSeconds(5))
                 .readTimeout(Duration.ofSeconds(15)).build();
     }
+// ----------------------------------------------
+public ERPNextPOSProfileDTO getPOSProfile(String posProfileName) {
+    //List<String> fields = Arrays.asList("name", "customer_name", "customer_type", "tax_id", "primary_address");
+    try {
+        //String fieldsJson = toJson(fields);
 
+        String url = appProperties.getErpNextUrl()
+                + "/api/resource/POS Profile/" + posProfileName;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set(HttpHeaders.AUTHORIZATION, "token " + appProperties.getErpNextApiKey() + ":" + appProperties.getErpNextApiSecret());
+
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+
+        log.info("ERPNext GET start: path=/api/resource/POS Profile/{}", posProfileName);
+        ResponseEntity<ERPNextPOSProfileDTO> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                request,
+                ERPNextPOSProfileDTO.class
+        );
+        log.info("ERPNext GET done (POS Profile): status={}", response.getStatusCode().value());
+        return response.getBody();
+    } catch (RestClientResponseException ex) {
+        org.springframework.http.HttpStatusCode status = ex.getStatusCode();
+        String body = sanitizeForLog(ex.getResponseBodyAsString());
+
+        if (status.is5xxServerError()) {
+            log.error("ERPNext 5xx response (POS Profile): status={}, body={}", status.value(), body);
+            throw new UpstreamServerException("ERPNext server error (POS Profile)", status.value());
+        } else {
+            log.warn("ERPNext 4xx response (POS Profile): status={}, body={}", status.value(), body);
+            throw new UpstreamClientException("ERPNext rejected POS Profile request", status.value());
+        }
+    } catch (ResourceAccessException ex) {
+        log.warn("ERPNext access error (POS Profile): {}", rootMessage(ex));
+        throw new UpstreamTimeoutException("Timeout or connection issue to ERPNext (POS Profile)", ex);
+    } catch (Exception ex) {
+        log.error("Unexpected error calling ERPNext POS Profile: {}", rootMessage(ex), ex);
+        throw ex;
+    }
+}
+// ----------------------------------------------
     public Map<String, Object> sendSalesInvoiceToERPNext(ERPNextSalesInvoiceDTO invoice) {
         String url = org.springframework.web.util.UriComponentsBuilder.fromHttpUrl(appProperties.getErpNextUrl())
                 .pathSegment("api", "method", "frappe.client.insert")

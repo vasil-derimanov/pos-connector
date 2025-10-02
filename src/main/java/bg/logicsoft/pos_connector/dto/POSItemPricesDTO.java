@@ -47,5 +47,7 @@ public class POSItemPricesDTO {
 
         @JsonProperty("tax_rate")
         private BigDecimal taxRate;
+
+        private String image;
     }
 }
