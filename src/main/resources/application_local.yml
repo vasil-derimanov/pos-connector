@@ -15,13 +15,8 @@ erpnext:
   api-secret: "afede6137335392"
 
   # Sales Invoice details
-  pos-warehouse: "POS Склад 2 - CE2"
-  pos-profile-EUR: "POS profile EUR"
-  price-list-EUR: "pos sales EUR"
-  company: "Company-2 EUR"
-  debit-to-EUR: "Debtors - CE2" # ?!?!?!?!?!?!
-  charge-type: "On Net Total"   # TODO: probably should be for every row
-  currency: "EUR"
+  pos-profile: "POS profile EUR"
+  charge-type: "On Net Total"
 
   # Employee - Cashiers
   employee:
