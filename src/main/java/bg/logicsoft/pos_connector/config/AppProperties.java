@@ -19,29 +19,14 @@ public class AppProperties {
     private String erpNextApiSecret;
 
     /* ERPNext "Sales Invoice" details */
-    @Value("${erpnext.pos-warehouse}")
-    private String erpNextPOSWarehouse;
-
-    @Value("${erpnext.pos-profile-EUR}")
-    private String erpNextPOSProfileEUR;
-
-    @Value("${erpnext.company}")
-    private String erpNextCompany;
-
-    @Value("${erpnext.debit-to-EUR}")
-    private String erpNextDebitToEUR;
-
-    @Value("${erpnext.price-list-EUR}")
-    private String erpNextPriceListEUR;
+    @Value("${erpnext.pos-profile}")
+    private String erpNextPOSProfile;
 
     @Value("${erpnext.charge-type}")
     private String erpNextChargeType;
 
     @Value("${erpnext.employee.designation}")
     private String erpNextEmployeeDesignation;
-
-    @Value("${erpnext.currency}")
-    private String erpNextCurrency;
 
     /* Fiscal Printer Gate configuration */
     @Value("${fpgate.url}")

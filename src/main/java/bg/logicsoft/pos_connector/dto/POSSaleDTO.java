@@ -15,11 +15,10 @@ public class POSSaleDTO {
     @JsonProperty("posting_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date postingDate;
-    private String currency;
 
     private List<Item> items;
     private List<Payment> payments;
-    private List<Tax> taxes;
+    //private List<Tax> taxes;
 
     public POSSaleDTO() {
     }
@@ -31,6 +30,13 @@ public class POSSaleDTO {
         private String itemCode;
         private Double qty;
         private Double rate;
+        private String uom;
+        @JsonProperty("item_tax_template")
+        private String itemTaxTemplate;
+        @JsonProperty("tax_type")
+        private String taxType;
+        @JsonProperty("tax_rate")
+        private Double taxRate;
 
         public Item() {
         }
@@ -44,19 +50,6 @@ public class POSSaleDTO {
         private Double amount;
 
         public Payment() {
-        }
-    }
-
-    @Getter
-    @Setter
-    public static class Tax {
-        @JsonProperty("charge_type")
-        private String chargeType;
-        @JsonProperty("account_head")
-        private String accountHead;
-        private Double rate;
-
-        public Tax() {
         }
     }
 }

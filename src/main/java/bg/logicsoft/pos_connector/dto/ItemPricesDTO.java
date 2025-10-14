@@ -11,15 +11,21 @@ import java.util.List;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ERPNextItemsPriceDTO {
+public class ItemPricesDTO {
 
-    private List<Item> message;
+    private List<Item> data;
+
+    @JsonProperty(value = "message")
+    private void unpackMessage(List<Item> items) {
+        this.data = items;
+    }
 
     @Getter
     @Setter
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Item {
-        private String name;
+        private String uom;
+        private String currency;
 
         @JsonProperty("item_code")
         private String itemCode;
@@ -27,18 +33,17 @@ public class ERPNextItemsPriceDTO {
         @JsonProperty("item_name")
         private String itemName;
 
-        private String uom;
-
         @JsonProperty("price_list_rate")
         private BigDecimal priceListRate;
-
-        private String currency;
 
         @JsonProperty("packing_unit")
         private Integer packingUnit;
 
-        @JsonProperty("tax_name")
-        private String taxName;
+        @JsonProperty("item_tax_template")
+        private String itemTaxTemplate;
+
+        @JsonProperty("tax_type")
+        private String taxType;
 
         @JsonProperty("tax_rate")
         private BigDecimal taxRate;

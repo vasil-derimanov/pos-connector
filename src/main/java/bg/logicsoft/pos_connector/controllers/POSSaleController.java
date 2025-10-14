@@ -1,8 +1,11 @@
 package bg.logicsoft.pos_connector.controllers;
 
+import bg.logicsoft.pos_connector.config.AppProperties;
+import bg.logicsoft.pos_connector.config.ERPNextRuntimeProperties;
 import bg.logicsoft.pos_connector.dto.ERPNextSalesInvoiceDTO;
 import bg.logicsoft.pos_connector.dto.ERPNextSalesInvoiceResponseDTO;
 import bg.logicsoft.pos_connector.dto.POSSaleDTO;
+import bg.logicsoft.pos_connector.mappers.SalesMapper;
 import bg.logicsoft.pos_connector.services.ERPNextService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.ResponseEntity;
@@ -18,22 +21,32 @@ import java.util.Map;
 public class POSSaleController {
     private final ERPNextService erpNextService;
     private final ObjectMapper objectMapper;
+    private final AppProperties appProperties;
+    private final ERPNextRuntimeProperties runtimeProperties;
+
     //private final FPGateService fpGateService;
 
-    public POSSaleController(ERPNextService erpNextService, ObjectMapper objectMapper/*, FPGateService fpGateService*/) {
+    public POSSaleController(
+            ERPNextService erpNextService,
+            ObjectMapper objectMapper,
+            AppProperties appProperties,
+            ERPNextRuntimeProperties runtimeProperties
+            /*, FPGateService fpGateService */) {
         this.erpNextService = erpNextService;
         this.objectMapper = objectMapper;
+        this.appProperties = appProperties;
+        this.runtimeProperties = runtimeProperties;
         /* this.fpGateService = fpGateService ;*/
     }
 
     @PostMapping("/pos-sale")
-    public ResponseEntity<?> createPOSInvoice(@RequestBody POSSaleDTO sale) {
+    public ResponseEntity<?> createERPNextInvoice(@RequestBody POSSaleDTO salePOS) {
 
-        ERPNextSalesInvoiceDTO erpNextSalesInvoiceDTO = new ERPNextSalesInvoiceDTO();
-        erpNextSalesInvoiceDTO.setFromPOSSale(sale, this.erpNextService.getAppProperties());
+        ERPNextSalesInvoiceDTO saleERPNext = new ERPNextSalesInvoiceDTO();
+        SalesMapper.setPOSSaleToERPNextSalesInvoice(saleERPNext, salePOS, appProperties, runtimeProperties);
 
         // 1) Send invoice to ERPNext
-        var erpResult = erpNextService.sendSalesInvoiceToERPNext(erpNextSalesInvoiceDTO);
+        var erpResult = erpNextService.sendSalesInvoiceToERPNext(saleERPNext);
 
         // 2) Convert ERPNext response to typed DTO
         ERPNextSalesInvoiceResponseDTO invoiceResponseDTO =

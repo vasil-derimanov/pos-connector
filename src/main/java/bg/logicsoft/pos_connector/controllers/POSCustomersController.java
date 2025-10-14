@@ -1,6 +1,5 @@
 package bg.logicsoft.pos_connector.controllers;
 
-import bg.logicsoft.pos_connector.config.AppProperties;
 import bg.logicsoft.pos_connector.dto.CustomersDTO;
 import bg.logicsoft.pos_connector.services.ERPNextService;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class POSCustomersController {
 
     private final ERPNextService erpNextService;
-    private final AppProperties appProperties;
 
     @GetMapping("/customers")
     public ResponseEntity<CustomersDTO> getCustomers() {
