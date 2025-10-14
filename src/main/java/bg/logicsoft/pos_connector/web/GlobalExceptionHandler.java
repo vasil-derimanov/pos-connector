@@ -25,8 +25,7 @@ public class GlobalExceptionHandler {
                 "error", "VALIDATION_ERROR",
                 "message", "Request validation failed",
                 "details", ex.getBindingResult().getAllErrors().stream()
-                        .map(err -> err.getDefaultMessage()).toList(),
-                "original_message", ex.getMessage()
+                        .map(err -> err.getDefaultMessage()).toList()
         ));
     }
 
@@ -35,8 +34,7 @@ public class GlobalExceptionHandler {
         log.warn("Upstream client error: status={}, message={}", ex.getStatusCode(), ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(Map.of(
                 "error", "UPSTREAM_CLIENT_ERROR",
-                "message", "Request was rejected by upstream service",
-                "original_message", ex.getMessage()
+                "message", "Request was rejected by upstream service"
         ));
     }
 
@@ -45,9 +43,7 @@ public class GlobalExceptionHandler {
         log.error("Upstream server error: status={}, message={}", ex.getStatusCode(), ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(Map.of(
                 "error", "UPSTREAM_SERVER_ERROR",
-                "message", "Upstream service failed",
-                "source","GlobalExceptionHandler",
-                "original_message", ex.getMessage()
+                "message", "Upstream service failed"
         ));
     }
 
@@ -56,9 +52,7 @@ public class GlobalExceptionHandler {
         log.warn("Upstream timeout: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).body(Map.of(
                 "error", "UPSTREAM_TIMEOUT",
-                "message", "Upstream service timed out",
-                "source","GlobalExceptionHandler",
-                "original_message", ex.getMessage()
+                "message", "Upstream service timed out"
         ));
     }
 
@@ -67,9 +61,7 @@ public class GlobalExceptionHandler {
         log.warn("Bad request: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
                 "error", "BAD_REQUEST",
-                "message", ex.getMessage(),
-                "source","GlobalExceptionHandler",
-                "original_message", ex.getMessage()
+                "message", ex.getMessage()
         ));
     }
 
@@ -78,9 +70,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(
                 Map.of(
                         "error", "MISSING_PARAMETER",
-                        "message", "Required parameter '" + ex.getParameterName() + "' is missing",
-                        "source","GlobalExceptionHandler",
-                        "original_message", ex.getMessage()
+                        "message", "Required parameter '" + ex.getParameterName() + "' is missing"
                 )
         );
     }
@@ -90,9 +80,7 @@ public class GlobalExceptionHandler {
         log.error("Unhandled exception in 'GlobalExceptionHandler'", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
                 "error", "INTERNAL_ERROR",
-                "message", "Unhandled exception in 'GlobalExceptionHandler'",
-                "source","GlobalExceptionHandler",
-                "original_message", ex.getMessage()
+                "message", "Unhandled exception in 'GlobalExceptionHandler'"
         ));
     }
 }

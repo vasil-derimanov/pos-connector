@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class POSModeOfPaymentDTO {
+public class ModeOfPaymentDTO {
     private List<ModeOfPayment> data;
 
     @Getter
@@ -17,5 +17,6 @@ public class POSModeOfPaymentDTO {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ModeOfPayment {
         private String name;
+        private String type;
     }
 }
