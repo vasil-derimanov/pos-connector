@@ -1,5 +1,6 @@
 package bg.logicsoft.pos_connector.dto;
 
+import bg.logicsoft.pos_connector.config.AppProperties;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -12,6 +13,12 @@ import java.util.List;
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ItemPricesDTO {
+
+    private final AppProperties appProperties;
+
+    public ItemPricesDTO(AppProperties appProperties) {
+        this.appProperties = appProperties;
+    }
 
     private List<Item> data;
 
@@ -49,5 +56,13 @@ public class ItemPricesDTO {
         private BigDecimal taxRate;
 
         private String image;
+
+//        public void setImage(String image) {
+//            if (image != null) {
+//                this.image = ItemPricesDTO.this.appProperties.getErpNextUrl() + image;
+//            } else {
+//                this.image = null;
+//            }
+//        }
     }
 }

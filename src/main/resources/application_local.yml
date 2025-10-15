@@ -8,6 +8,19 @@ spring:
 server:
   port: 8080
 
+# logging
+logging:
+  file:
+    name: logs/pos-connector.log
+  level:
+    root: INFO
+    bg.logicsoft.pos_connector: DEBUG
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 50
+      file-name-pattern: logs/pos-connector-%d{yyyy-MM-dd}.%i.log
+
 # ERPNext
 erpnext:
   url: "http://site15.local:8001"
