@@ -26,14 +26,14 @@ public class ERPNextInitDataLoaderService {
             return;
         }
 
-        System.out.println("🚀 Loading Initialization data began. Fetching data from ERPNext API...");
+        log.info("🚀 Loading Initialization data began. Fetching data from ERPNext API...");
         // Get "POS Profile"
-        System.out.println("Requesting 'POS Profile' ...");
+        log.info("Requesting 'POS Profile' ...");
         String posProfileName = appProperties.getErpNextPOSProfile();
         try {
             ERPNextPOSProfileDTO posProfileDTO = this.getPOSProfile(erpNextURL);
             if (posProfileDTO == null || posProfileDTO.getData() == null) {
-                System.out.println("POS Profile response is empty for name= " + posProfileName);
+                log.error("POS Profile response is empty for name= '{}'. pos-connector shutdown!", posProfileName);
                 System.exit(0);
             }
 
@@ -49,24 +49,24 @@ public class ERPNextInitDataLoaderService {
                     runtimeProperties.getWarehouse(),
                     runtimeProperties.getCurrency(),
                     runtimeProperties.getPriceList());
-            System.out.println("Getting 'POS Profile': OK");
+            log.info("Getting 'POS Profile': OK");
         } catch (Exception ex) {
-            System.out.println("POS Profile error: " + ex.getMessage());
+            log.error("POS Profile error: {}  . pos-connector shutdown!", ex.getMessage());
             System.exit(0);
         }
 
         // Get "Item Tax Templates"
-        System.out.println("Requesting 'Item Tax Templates' ...");
+        log.info("Requesting 'Item Tax Templates' ...");
         try {
             ERPNextItemTaxTemplatesDTO itemTaxTemplates = this.getItemTaxTemplates(erpNextURL);
             if (itemTaxTemplates == null || itemTaxTemplates.getMessage() == null) {
-                System.out.println("Item Tax Templates response is empty!");
+                log.error("Item Tax Templates response is empty! pos-connector shutdown!");
                 System.exit(0);
             }
             runtimeProperties.setItemTaxTemplates(itemTaxTemplates);
-            System.out.println("Getting 'Item Tax Templates': OK");
+            log.info("Getting 'Item Tax Templates': OK");
         } catch (Exception ex) {
-            System.out.println("Item Tax Templates error: " + ex.getMessage());
+            log.error("Item Tax Templates error: {}. pos-connector shutdown!", ex.getMessage());
             System.exit(0);
         }
     }
